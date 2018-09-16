@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
-
 <body>
   <nav>
     <div class="nav-wrapper blue darken-3">
@@ -19,14 +18,42 @@
   </nav>
   <div class="container">
     <div class="row">
-      <div class="col s12">
-        <ul class="collection">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <ul class="flashes col s12">
+        {% for message in messages %}
+        <li>
+          <p class="small-font center">{{ message }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %} {% endwith %}
+    </div>
+    <div class="row">
+      <div class="col s4 card-panel white-text blue-grey darken-3">
+        <ul class="collection-with-header">
+          <li class="collection-header">
+            <p class="small-font white-text title-style">Vote Count</p>
+          </li>
           {% for candidate in candidates %}
           <li class="collection-item row">
-              <p class="very-small-font">{{candidate}}</p>
-            <div class="col s2">
-                <a class="waves-effect waves-light btn-large orange darken-2" href="{{url_for('send_vote',candidate = candidate)}}">Vote</a>
-            </div>
+            <p class="very-small-font candidate-name col s10"><strong>{{candidate}}</strong></p>
+            <p class="very-small-font white-text col s2">{{votes[loop.index0]}}</p>
+          </li>
+          {% endfor %}
+      </div>
+      <div class="col s4"></div>
+      <div class="col s4 card white-text blue-grey darken-3">
+        <ul class="collection-with-header">
+          <li class="collection-header">
+            <p class="small-font white-text title-style">Vote</p>
+          </li>
+
+          {% for candidate in candidates %}
+          <li class="collection-item row">
+            <form class="block-style" action="{{url_for('send_vote', candidate = candidate)}}" method="POST">
+              <p class="very-small-font candidate-name col s8">{{candidate}}</p>
+              <input class="col s4 btn amber darken-1" type="submit" value="Vote">
+            </form>
           </li>
           {% endfor %}
       </div>

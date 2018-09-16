@@ -3,11 +3,12 @@ pragma solidity ^0.4.22;
 contract VotingContract {
 
   mapping (bytes32 => uint8) public votesReceived;
+  mapping (address => bool) private addressVoted;
 
   bytes32[] public candidateList;
   uint public candidateCount;
 
-  constructor (bytes32[] candidateNames, uint count) public {
+  constructor (bytes32[] candidateNames, uint count) payable public {
     candidateList = candidateNames;
     candidateCount = count;
   }
@@ -25,10 +26,12 @@ contract VotingContract {
     return votesReceived[candidate];
   }
 
-
-  function voteForCandidate(bytes32 candidate) public {
+  function voteForCandidate(bytes32 candidate) payable public {
     require(validCandidate(candidate));
+    require(addressVoted[msg.sender] == false);
     votesReceived[candidate] += 1;
+    addressVoted[msg.sender] = true;
+    msg.sender.transfer(1);
   }
 
   function validCandidate(bytes32 candidate) view public returns (bool) {
